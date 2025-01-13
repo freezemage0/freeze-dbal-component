@@ -1,0 +1,19 @@
+{
+  "name": "freeze/dbal-component",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Demyan Seleznev",
+      "email": "freezemage0@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Freeze\\Component\\DBAL\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">8.0",
+    "ext-mysqli": "*"
+  }
+}
