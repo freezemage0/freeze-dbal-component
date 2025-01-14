@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Freeze\Component\DBAL\Expression;
 
 use Freeze\Component\DBAL\Contract\Expression\ExpressionInterface;
+use Freeze\Component\DBAL\Contract\ExpressionBuilderInterface;
 
 final class LogicalExpression implements ExpressionInterface
 {
@@ -29,8 +30,8 @@ final class LogicalExpression implements ExpressionInterface
     ) {
     }
 
-    public function build(): string
+    public function build(ExpressionBuilderInterface $expressionBuilder): string
     {
-        return $this->value;
+        return $expressionBuilder->buildLogical($this);
     }
 }

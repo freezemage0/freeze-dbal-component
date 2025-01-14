@@ -6,6 +6,7 @@ namespace Freeze\Component\DBAL\Expression\Criterion;
 
 use Freeze\Component\DBAL\Contract\Expression\BindableExpressionInterface;
 use Freeze\Component\DBAL\Contract\Expression\QuoteStrategyInterface;
+use Freeze\Component\DBAL\Contract\ExpressionBuilderInterface;
 use Freeze\Component\DBAL\Contract\StatementInterface;
 
 final class Range implements BindableExpressionInterface
@@ -20,15 +21,6 @@ final class Range implements BindableExpressionInterface
         $this->values = $values;
     }
 
-    public function getBinding(): string
-    {
-        $bindings = [];
-        for ($index = 0, $length = \count($this->values); $index < $length; $index += 1) {
-            $bindings[] = $this->getIndexedBinding($index);
-        }
-        return \implode(', ', $bindings);
-    }
-
     public function bind(StatementInterface $statement): void
     {
         foreach ($this->values as $index => $value) {
@@ -41,8 +33,8 @@ final class Range implements BindableExpressionInterface
         return ":{$this->column}_{$index}";
     }
 
-    public function build(QuoteStrategyInterface $quoteStrategy): string
+    public function build(ExpressionBuilderInterface $expressionBuilder): string
     {
-        return "{$quoteStrategy->quote($this->column)} IN ({$this->getBinding()})";
+        return $expressionBuilder->buildRange($this);
     }
 }

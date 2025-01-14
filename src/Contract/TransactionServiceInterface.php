@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Freeze\Component\DBAL\Contract;
 
-interface TransactionManagerInterface
+interface TransactionServiceInterface
 {
     public function start(): void;
 

@@ -27,4 +27,15 @@ class Schema
 
         return $this->primary;
     }
+
+    public function getColumn(string $name): ?Column
+    {
+        foreach ($this->columns as $column) {
+            if ($column->name === $name) {
+                return $column;
+            }
+        }
+
+        return null;
+    }
 }

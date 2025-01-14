@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Freeze\Component\DBAL\Contract;
 
+use Freeze\Component\DBAL\Schema;
+
 interface DriverInterface
 {
     public function query(string $query): ?ResultInterface;
@@ -13,4 +15,12 @@ interface DriverInterface
     public function connect(): void;
 
     public function disconnect(): void;
+
+    public function getIdentityGenerator(): IdentityGeneratorInterface;
+
+    public function getTransactionManager(): TransactionServiceInterface;
+
+    public function getLockingService(): LockingServiceInterface;
+
+    public function getQueryBuilder(Schema $schema): QueryBuilderInterface;
 }

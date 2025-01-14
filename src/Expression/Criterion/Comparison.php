@@ -6,6 +6,7 @@ namespace Freeze\Component\DBAL\Expression\Criterion;
 
 use Freeze\Component\DBAL\Contract\Expression\BindableExpressionInterface;
 use Freeze\Component\DBAL\Contract\Expression\QuoteStrategyInterface;
+use Freeze\Component\DBAL\Contract\ExpressionBuilderInterface;
 use Freeze\Component\DBAL\Contract\StatementInterface;
 
 final class Comparison implements BindableExpressionInterface
@@ -24,9 +25,9 @@ final class Comparison implements BindableExpressionInterface
     ) {
     }
 
-    public function build(QuoteStrategyInterface $quoteStrategy): string
+    public function build(ExpressionBuilderInterface $expressionBuilder): string
     {
-        return "{$quoteStrategy->quote($this->column)} {$this->operator} {$this->getBinding()}";
+        return $expressionBuilder->buildComparison($this);
     }
 
     public function bind(StatementInterface $statement): void

@@ -6,6 +6,7 @@ namespace Freeze\Component\DBAL\Expression;
 
 use Freeze\Component\DBAL\Contract\Expression\BindableExpressionInterface;
 use Freeze\Component\DBAL\Contract\Expression\QuoteStrategyInterface;
+use Freeze\Component\DBAL\Contract\ExpressionBuilderInterface;
 use Freeze\Component\DBAL\Contract\StatementInterface;
 
 final class Assignment implements BindableExpressionInterface
@@ -21,8 +22,8 @@ final class Assignment implements BindableExpressionInterface
         $statement->bind(":{$this->column}", $this->value);
     }
 
-    public function build(QuoteStrategyInterface $quoteStrategy): string
+    public function build(ExpressionBuilderInterface $expressionBuilder): string
     {
-        return "{$quoteStrategy->quote($this->column)} = :{$this->column}";
+        return $expressionBuilder->buildAssignment($this);
     }
 }

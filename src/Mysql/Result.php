@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Freeze\Component\DBAL\Driver\Mysql;
+namespace Freeze\Component\DBAL\Mysql;
 
 use Freeze\Component\DBAL\Contract\ResultInterface;
 use mysqli_result;

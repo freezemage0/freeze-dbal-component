@@ -2,13 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Freeze\Component\DBAL\Driver\Mysql;
+namespace Freeze\Component\DBAL\Mysql;
 
 use Freeze\Component\DBAL\Contract\DriverInterface;
+use Freeze\Component\DBAL\Contract\IdentityGeneratorInterface;
+use Freeze\Component\DBAL\Contract\LockingServiceInterface;
+use Freeze\Component\DBAL\Contract\QueryBuilderInterface;
 use Freeze\Component\DBAL\Contract\ResultInterface;
 use Freeze\Component\DBAL\Contract\StatementInterface;
+use Freeze\Component\DBAL\Contract\TransactionServiceInterface;
 use Freeze\Component\DBAL\Exception\ConnectionException;
 use Freeze\Component\DBAL\Exception\QueryException;
+use Freeze\Component\DBAL\Schema;
 use mysqli;
 use mysqli_result;
 use mysqli_stmt;
@@ -82,5 +87,27 @@ final class Driver implements DriverInterface
         }
 
         return $this->driver;
+    }
+
+    public function getIdentityGenerator(): IdentityGeneratorInterface
+    {
+        return new IdentityGenerator($this->driver());
+    }
+
+    public function getTransactionManager(): TransactionServiceInterface
+    {
+        return new TransactionService($this);
+    }
+
+    public function getLockingService(): LockingServiceInterface
+    {
+        return new LockingService($this);
+    }
+
+    public function getQueryBuilder(Schema $schema): QueryBuilderInterface
+    {
+        $quoteStrategy = new QuoteStrategy();
+
+        return new QueryBuilder($schema, new ExpressionBuilder($quoteStrategy), $quoteStrategy);
     }
 }
