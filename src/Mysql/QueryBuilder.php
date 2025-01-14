@@ -10,6 +10,7 @@ use Freeze\Component\DBAL\Contract\ExpressionBuilderInterface;
 use Freeze\Component\DBAL\Contract\QueryBuilderInterface;
 use Freeze\Component\DBAL\Expression\Criteria;
 use Freeze\Component\DBAL\Expression\Query;
+use Freeze\Component\DBAL\Expression\ValueMap;
 use Freeze\Component\DBAL\Schema;
 use RuntimeException;
 
@@ -63,15 +64,11 @@ final class QueryBuilder implements QueryBuilderInterface
     {
     }
 
-    public function buildUpdate(Criteria $criteria, array $values): string
+    public function buildUpdate(Criteria $criteria, ValueMap $map): string
     {
         $assignments = [];
-        foreach ($values as $name => $value) {
-            $column = $this->schema->getColumn($name);
-            if ($column === null) {
-                throw new RuntimeException("Unknown column {$name}");
-            }
-            $assignments[] = "{$this->quoteStrategy->quote($column->name)} = ?";
+        foreach ($map as $column => $value) {
+            $assignments[] = "{$this->quoteStrategy->quote($column)} = ?";
         }
 
         $assignments = \implode(', ', $assignments);

@@ -7,6 +7,7 @@ namespace Freeze\Component\DBAL\Contract;
 use Freeze\Component\DBAL\Expression\Assignment;
 use Freeze\Component\DBAL\Expression\Criteria;
 use Freeze\Component\DBAL\Expression\Query;
+use Freeze\Component\DBAL\Expression\ValueMap;
 use Freeze\Component\DBAL\Schema;
 
 interface QueryBuilderInterface
@@ -15,7 +16,7 @@ interface QueryBuilderInterface
 
     public function buildInsert(array $values): string;
 
-    public function buildUpdate(Criteria $criteria, array $values): string;
+    public function buildUpdate(Criteria $criteria, ValueMap $map): string;
 
     public function buildDelete(Criteria $criteria): string;
 

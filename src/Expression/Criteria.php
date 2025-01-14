@@ -9,6 +9,7 @@ use Freeze\Component\DBAL\Contract\Expression\BindableExpressionInterface;
 use Freeze\Component\DBAL\Contract\Expression\ExpressionInterface;
 use Freeze\Component\DBAL\Contract\Expression\QuoteStrategyInterface;
 use Freeze\Component\DBAL\Contract\ExpressionBuilderInterface;
+use Freeze\Component\DBAL\Contract\StatementInterface;
 use IteratorAggregate;
 use Traversable;
 
@@ -54,5 +55,14 @@ final class Criteria implements IteratorAggregate
         }
 
         return \implode(' ', $result);
+    }
+
+    public function bind(StatementInterface $statement): void
+    {
+        foreach ($this->criteria as $criterion) {
+            if ($criterion instanceof BindableExpressionInterface) {
+                $criterion->bind($statement);
+            }
+        }
     }
 }
