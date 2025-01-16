@@ -7,7 +7,7 @@ namespace Freeze\Component\DBAL\Expression;
 use ArrayIterator;
 use Freeze\Component\DBAL\Contract\Expression\BindableExpressionInterface;
 use Freeze\Component\DBAL\Contract\Expression\ExpressionInterface;
-use Freeze\Component\DBAL\Contract\Expression\QuoteStrategyInterface;
+use Freeze\Component\DBAL\Contract\Expression\EscapeStrategyInterface;
 use Freeze\Component\DBAL\Contract\ExpressionBuilderInterface;
 use Freeze\Component\DBAL\Contract\StatementInterface;
 use IteratorAggregate;

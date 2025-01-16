@@ -106,7 +106,7 @@ final class Driver implements DriverInterface
 
     public function getQueryBuilder(Schema $schema): QueryBuilderInterface
     {
-        $quoteStrategy = new QuoteStrategy();
+        $quoteStrategy = new EscapeStrategy($this->driver());
 
         return new QueryBuilder($schema, new ExpressionBuilder($quoteStrategy), $quoteStrategy);
     }

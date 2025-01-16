@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Freeze\Component\DBAL\Expression\Criterion;
 
 use Freeze\Component\DBAL\Contract\Expression\BindableExpressionInterface;
-use Freeze\Component\DBAL\Contract\Expression\QuoteStrategyInterface;
+use Freeze\Component\DBAL\Contract\Expression\EscapeStrategyInterface;
 use Freeze\Component\DBAL\Contract\ExpressionBuilderInterface;
 use Freeze\Component\DBAL\Contract\StatementInterface;
 

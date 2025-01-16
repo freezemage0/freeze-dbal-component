@@ -14,7 +14,7 @@ interface QueryBuilderInterface
 {
     public function buildSelect(Query $query): string;
 
-    public function buildInsert(array $values): string;
+    public function buildInsert(ValueMap $values): string;
 
     public function buildUpdate(Criteria $criteria, ValueMap $map): string;
 

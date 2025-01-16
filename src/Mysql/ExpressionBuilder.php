@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Freeze\Component\DBAL\Mysql;
 
-use Freeze\Component\DBAL\Contract\Expression\QuoteStrategyInterface;
+use Freeze\Component\DBAL\Contract\Expression\EscapeStrategyInterface;
 use Freeze\Component\DBAL\Contract\ExpressionBuilderInterface;
 use Freeze\Component\DBAL\Expression\Assignment;
 use Freeze\Component\DBAL\Expression\Criterion\Between;
@@ -15,7 +15,7 @@ use Freeze\Component\DBAL\Expression\LogicalExpression;
 final class ExpressionBuilder implements ExpressionBuilderInterface
 {
     public function __construct(
-        private readonly QuoteStrategyInterface $quoteStrategy
+        private readonly EscapeStrategyInterface $quoteStrategy
     ) {
     }
 

@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace Freeze\Component\DBAL\Mysql;
 
-use Freeze\Component\DBAL\Contract\Expression\QuoteStrategyInterface;
+use Freeze\Component\DBAL\Contract\Expression\EscapeStrategyInterface;
+use mysqli;
 
-final class QuoteStrategy implements QuoteStrategyInterface
+final class EscapeStrategy implements EscapeStrategyInterface
 {
+    public function __construct(
+        private readonly mysqli $driver
+    ) {
+    }
+
     /**
      * Transforms identifier in form of "database.table" into "`database`.`table`".
      *
@@ -29,5 +35,10 @@ final class QuoteStrategy implements QuoteStrategyInterface
     private function quotePart(string $part): string
     {
         return '`' . \trim($part, '`') . '`';
+    }
+
+    public function escape(float|bool|int|string $value): string
+    {
+        return $this->driver->real_escape_string($value);
     }
 }
