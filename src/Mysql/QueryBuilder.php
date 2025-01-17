@@ -77,7 +77,7 @@ final class QueryBuilder implements QueryBuilderInterface
         );
     }
 
-    public function buildUpdate(Criteria $criteria, ValueMap $map): string
+    public function buildUpdate(ValueMap $map, Criteria $criteria): string
     {
         $assignments = [];
         foreach ($map as $column => $value) {

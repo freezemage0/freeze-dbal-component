@@ -39,6 +39,6 @@ final class EscapeStrategy implements EscapeStrategyInterface
 
     public function escape(float|bool|int|string $value): string
     {
-        return $this->driver->real_escape_string($value);
+        return $this->driver->real_escape_string((string) $value);
     }
 }

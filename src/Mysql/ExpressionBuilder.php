@@ -15,33 +15,51 @@ use Freeze\Component\DBAL\Expression\LogicalExpression;
 final class ExpressionBuilder implements ExpressionBuilderInterface
 {
     public function __construct(
-        private readonly EscapeStrategyInterface $quoteStrategy
+        private readonly EscapeStrategyInterface $escapeStrategy
     ) {
     }
 
     public function buildComparison(Comparison $comparison): string
     {
-        return "{$this->quoteStrategy->quote($comparison->column)} {$comparison->operator} ?";
+        $parts = [
+            $this->escapeStrategy->quote($comparison->column),
+            $comparison->operator,
+            $this->escape($comparison->value)
+        ];
+        return \implode(' ', $parts);
     }
 
     public function buildBetween(Between $between): string
     {
-        return "{$this->quoteStrategy->quote($between->column)} BETWEEN ? AND ?";
+        $column = $this->escapeStrategy->quote($between->column);
+        $min = $this->escape($between->lowestBoundary);
+        $max = $this->escape($between->highestBoundary);
+
+        return "{$column} BETWEEN {$min} AND {$max}";
     }
 
     public function buildAssignment(Assignment $assignment): string
     {
-        return "{$this->quoteStrategy->quote($assignment->column)} = ?";
+        return "{$this->escapeStrategy->quote($assignment->column)} = {$this->escape($assignment->value)}";
     }
 
     public function buildRange(Range $range): string
     {
-        $items = \implode(', ', \array_fill(0, \count($range->values), '?'));
-        return "{$this->quoteStrategy->quote($range->column)} IN ({$items})";
+        $values = \implode(', ', \array_map($this->escape(...), $range->values));
+        return "{$this->escapeStrategy->quote($range->column)} IN ({$values})";
     }
 
     public function buildLogical(LogicalExpression $logicalExpression): string
     {
         return $logicalExpression->value;
+    }
+
+    private function escape(string|int|float|bool $value): string
+    {
+        if (!\is_int($value) && !\is_float($value)) {
+            $value = "'{$value}'";
+        }
+
+        return $this->escapeStrategy->escape($value);
     }
 }

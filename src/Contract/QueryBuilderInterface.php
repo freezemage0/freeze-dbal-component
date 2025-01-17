@@ -16,7 +16,7 @@ interface QueryBuilderInterface
 
     public function buildInsert(ValueMap $values): string;
 
-    public function buildUpdate(Criteria $criteria, ValueMap $map): string;
+    public function buildUpdate(ValueMap $map, Criteria $criteria): string;
 
     public function buildDelete(Criteria $criteria): string;
 

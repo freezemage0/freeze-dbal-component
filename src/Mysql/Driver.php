@@ -26,7 +26,8 @@ final class Driver implements DriverInterface
         private readonly string $hostname,
         private readonly string $username,
         private readonly string $password,
-        private readonly string $database
+        private readonly string $database,
+        private readonly int $port = 3306
     ) {
     }
 
@@ -61,7 +62,8 @@ final class Driver implements DriverInterface
                 $this->hostname,
                 $this->username,
                 $this->password,
-                $this->database
+                $this->database,
+                $this->port
             );
 
             if ($driver->connect_errno) {
