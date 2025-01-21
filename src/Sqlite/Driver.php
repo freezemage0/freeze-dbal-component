@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Freeze\Component\DBAL\Mysql;
+namespace Freeze\Component\DBAL\Sqlite;
 
 use Freeze\Component\DBAL\Contract\DriverInterface;
 use Freeze\Component\DBAL\Contract\IdentityGeneratorInterface;
@@ -13,21 +13,18 @@ use Freeze\Component\DBAL\Contract\StatementInterface;
 use Freeze\Component\DBAL\Contract\TransactionServiceInterface;
 use Freeze\Component\DBAL\Exception\ConnectionException;
 use Freeze\Component\DBAL\Exception\QueryException;
+use Freeze\Component\DBAL\Fallback\NullLockingService;
 use Freeze\Component\DBAL\Schema;
-use mysqli;
-use mysqli_result;
-use mysqli_stmt;
+use SQLite3;
+use SQLite3Result;
+use SQLite3Stmt;
 
 final class Driver implements DriverInterface
 {
-    private mysqli $driver;
+    private ?SQLite3 $driver = null;
 
     public function __construct(
-        private readonly string $hostname,
-        private readonly string $username,
-        private readonly string $password,
-        private readonly string $database,
-        private readonly int $port = 3306
+        private readonly ?string $filepath
     ) {
     }
 
@@ -36,11 +33,11 @@ final class Driver implements DriverInterface
         $driver = $this->driver();
 
         $result = $driver->query($query);
-        if ($result === false) {
-            throw new QueryException($driver->error, $driver->errno);
+        if ($driver->lastErrorCode() !== 0) {
+            throw new QueryException($driver->lastErrorMsg(), $driver->lastErrorCode());
         }
 
-        return ($result instanceof mysqli_result) ? new Result($result) : null;
+        return ($result instanceof SQLite3Result) ? new Result($result) : null;
     }
 
     public function prepare(string $statement): ?StatementInterface
@@ -48,46 +45,35 @@ final class Driver implements DriverInterface
         $driver = $this->driver();
 
         $statement = $driver->prepare($statement);
-        if ($statement === false) {
-            throw new QueryException($driver->error, $driver->errno);
+        if ($driver->lastErrorCode() !== 0) {
+            throw new QueryException($driver->lastErrorMsg(), $driver->lastErrorCode());
         }
 
-        return ($statement instanceof mysqli_stmt) ? new Statement($statement) : null;
+        return ($statement instanceof SQLite3Stmt) ? new Statement($statement) : null;
     }
 
     public function connect(): void
     {
-        if (!isset($this->driver)) {
-            $driver = new mysqli(
-                $this->hostname,
-                $this->username,
-                $this->password,
-                $this->database,
-                $this->port
-            );
-
-            if ($driver->connect_errno) {
-                throw new ConnectionException($driver->connect_error, $driver->connect_errno);
+        if ($this->driver === null) {
+            $driver = new SQLite3($this->filepath);
+            if ($driver->lastErrorCode() !== 0) {
+                throw new ConnectionException($driver->lastErrorMsg(), $driver->lastErrorCode());
             }
-
             $this->driver = $driver;
         }
     }
 
     public function disconnect(): void
     {
-        if (isset($this->driver)) {
+        if ($this->driver !== null) {
             $this->driver->close();
-            unset($this->driver);
+            $this->driver = null;
         }
     }
 
-    private function driver(): mysqli
+    private function driver(): SQLite3
     {
-        if (!isset($this->driver)) {
-            $this->connect();
-        }
-
+        $this->connect();
         return $this->driver;
     }
 
@@ -103,13 +89,11 @@ final class Driver implements DriverInterface
 
     public function getLockingService(): LockingServiceInterface
     {
-        return new LockingService($this);
+        return new NullLockingService();
     }
 
     public function getQueryBuilder(Schema $schema): QueryBuilderInterface
     {
-        $quoteStrategy = new EscapeStrategy($this->driver());
-
-        return new QueryBuilder($schema, new ExpressionBuilder($quoteStrategy), $quoteStrategy);
+        // TODO: Implement getQueryBuilder() method.
     }
 }

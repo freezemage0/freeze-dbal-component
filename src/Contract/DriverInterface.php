@@ -18,7 +18,7 @@ interface DriverInterface
 
     public function getIdentityGenerator(): IdentityGeneratorInterface;
 
-    public function getTransactionManager(): TransactionServiceInterface;
+    public function getTransactionService(): TransactionServiceInterface;
 
     public function getLockingService(): LockingServiceInterface;
 

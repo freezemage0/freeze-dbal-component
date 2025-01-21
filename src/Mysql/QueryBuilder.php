@@ -81,7 +81,7 @@ final class QueryBuilder implements QueryBuilderInterface
     {
         $assignments = [];
         foreach ($map as $column => $value) {
-            $assignments[] = "{$this->escapeStrategy->quote($column)} = ?";
+            $assignments[] = "{$this->escapeStrategy->quote($column)} = {$this->escapeStrategy->escape($value)}";
         }
 
         $assignments = \implode(', ', $assignments);
