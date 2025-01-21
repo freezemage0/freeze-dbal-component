@@ -2,15 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Freeze\Component\DBAL\Column;
+namespace Freeze\Component\DBAL\Schema\Column;
 
+use Attribute;
 use Freeze\Component\DBAL\Contract\ColumnTypeInterface;
 
-final class TextType implements ColumnTypeInterface
+#[Attribute(Attribute::TARGET_PROPERTY)]
+final class CharType implements ColumnTypeInterface
 {
+    public function __construct(
+        private readonly int $length
+    ) {
+    }
+
     public function getExpression(): string
     {
-        return 'TEXT';
+        return "CHAR({$this->length})";
     }
 
     public function internalize(mixed $value): string

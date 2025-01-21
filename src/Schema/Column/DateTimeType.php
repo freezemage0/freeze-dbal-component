@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Freeze\Component\DBAL\Column;
+namespace Freeze\Component\DBAL\Schema\Column;
 
+use Attribute;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Freeze\Component\DBAL\Contract\ColumnTypeInterface;
 use Freeze\Component\DBAL\Exception\InvalidArgumentValueException;
 
+#[Attribute(Attribute::TARGET_PROPERTY)]
 final class DateTimeType implements ColumnTypeInterface
 {
     private const DATE_TIME_FORMAT = 'Y-m-d H:i:s';

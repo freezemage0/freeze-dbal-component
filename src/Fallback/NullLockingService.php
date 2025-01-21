@@ -15,6 +15,6 @@ final class NullLockingService implements LockingServiceInterface
 
     public function release(string $name): bool
     {
-        return false;
+        return true;
     }
 }

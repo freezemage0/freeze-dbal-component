@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Freeze\Component\DBAL\Column;
+namespace Freeze\Component\DBAL\Schema\Column;
 
+use Attribute;
 use Freeze\Component\DBAL\Contract\ColumnTypeInterface;
 
+#[Attribute(Attribute::TARGET_PROPERTY)]
 final class DecimalType implements ColumnTypeInterface
 {
     public function __construct(
