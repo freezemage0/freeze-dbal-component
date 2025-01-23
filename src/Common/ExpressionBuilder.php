@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Freeze\Component\DBAL\Mysql;
+namespace Freeze\Component\DBAL\Common;
 
 use Freeze\Component\DBAL\Contract\Expression\EscapeStrategyInterface;
 use Freeze\Component\DBAL\Contract\ExpressionBuilderInterface;
@@ -21,45 +21,47 @@ final class ExpressionBuilder implements ExpressionBuilderInterface
 
     public function buildComparison(Comparison $comparison): string
     {
-        $parts = [
+        return \sprintf(
+            '%s %s %s',
             $this->escapeStrategy->quote($comparison->column),
             $comparison->operator,
-            $this->escape($comparison->value)
-        ];
-        return \implode(' ', $parts);
+            $this->escapeStrategy->escape($comparison->value)
+        );
     }
 
     public function buildBetween(Between $between): string
     {
-        $column = $this->escapeStrategy->quote($between->column);
-        $min = $this->escape($between->lowestBoundary);
-        $max = $this->escape($between->highestBoundary);
-
-        return "{$column} BETWEEN {$min} AND {$max}";
+        return \sprintf(
+            '%s BETWEEN %s AND %s',
+            $this->escapeStrategy->quote($between->column),
+            $this->escapeStrategy->escape($between->lowestBoundary),
+            $this->escapeStrategy->escape($between->highestBoundary)
+        );
     }
 
     public function buildAssignment(Assignment $assignment): string
     {
-        return "{$this->escapeStrategy->quote($assignment->column)} = {$this->escape($assignment->value)}";
+        return \sprintf(
+            "%s = %s;",
+            $this->escapeStrategy->quote($assignment->column),
+            $this->escapeStrategy->escape($assignment->value)
+        );
     }
 
     public function buildRange(Range $range): string
     {
-        $values = \implode(', ', \array_map($this->escape(...), $range->values));
-        return "{$this->escapeStrategy->quote($range->column)} IN ({$values})";
+        return \sprintf(
+            '%s IN (%s)',
+            $this->escapeStrategy->quote($range->column),
+            \implode(', ', \array_map(
+                $this->escapeStrategy->escape(...),
+                $range->values
+            ))
+        );
     }
 
     public function buildLogical(LogicalExpression $logicalExpression): string
     {
         return $logicalExpression->value;
-    }
-
-    private function escape(string|int|float|bool $value): string
-    {
-        if (!\is_int($value) && !\is_float($value)) {
-            $value = "'{$value}'";
-        }
-
-        return $this->escapeStrategy->escape($value);
     }
 }

@@ -65,4 +65,9 @@ final class Criteria implements IteratorAggregate
             }
         }
     }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->criteria);
+    }
 }

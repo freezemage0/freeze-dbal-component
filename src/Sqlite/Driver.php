@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Freeze\Component\DBAL\Sqlite;
 
+use Freeze\Component\DBAL\Common\NullLockingService;
 use Freeze\Component\DBAL\Contract\DriverInterface;
 use Freeze\Component\DBAL\Contract\IdentityGeneratorInterface;
 use Freeze\Component\DBAL\Contract\LockingServiceInterface;
@@ -13,7 +14,6 @@ use Freeze\Component\DBAL\Contract\StatementInterface;
 use Freeze\Component\DBAL\Contract\TransactionServiceInterface;
 use Freeze\Component\DBAL\Exception\ConnectionException;
 use Freeze\Component\DBAL\Exception\QueryException;
-use Freeze\Component\DBAL\Fallback\NullLockingService;
 use Freeze\Component\DBAL\Schema;
 use SQLite3;
 use SQLite3Result;
